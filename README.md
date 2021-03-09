@@ -57,7 +57,7 @@ app.set('view engine', 'html')
 // 读取views目录的文件，解析并返回给客户端.render函数
 res.render('index')
 ```
-### 3.1 使用css静态文件
+### 2.3 使用css静态文件
 * 用户发送http请求->url->解析路由->找到匹配的规则->执行指定绑定函数（处理静态、动态文件），返回对应内容至用户
   * 以'/public'开头->静态->直接读取指定目录下的文件，返回给用户
   * 其他路由，动态->处理业务逻辑，加载模板，解析模板->返回数据给用户
@@ -66,3 +66,59 @@ res.render('index')
 // 请求以'/public'，将文件路径补全，如：该目录下的main.css
 app.use('/public', express.static(__dirname + '/public'))
 ```
+
+## 三、项目模块划分
+### 3.1 根据功能进行模块划分，有：
+1. 前台模块
+2. 后台模块
+3. API模块
+
+### 3.2 使用app.use()进行模块划分的编程，并在**routers文件夹**创建对应的js文件
+
+app.use('admin', require('./routers/admin'))
+app.use('api', require('./routers/api'))
+app.use('/', require('./routers/main'))
+```
+
+### 3.3 在对应的js文件中创建路由，例如：
+```javaScript
+// admin的子路由
+var express = require('express')
+var router = express.Router()
+router.get('/user', function (req, res, next) {
+  res.send('Admin User')
+})
+module.exports = router
+```
+* 通过url访问：http://localhost:8081/admin/user
+
+### 3.4 模块的详细划分
+1. main模块
+* /   首页
+* /view   内容页
+2. api模块
+* /register   用户注册
+* /login    用户登录
+* /comment    评论获取
+* /comment/post   评论提交
+3. admin模块
+* 用户管理
+  * /user   用户列表
+* 分类管理
+  * /category    分类列表
+  * /category/add   添加分类
+  * /category/edit    编辑分类
+  * /category/delete    删除分类
+* 文章内容管理
+  * /article    内容列表
+  * /article/add    添加内容
+  * /article/edit   编辑内容
+  * /article/delete   删除内容
+* 评论内容管理
+  * /comment    评论列表
+  * /comment/delete   删除评论
+
+### 3.5 功能开发顺序
+* 功能模块开发顺序：**用户、栏目、内容、评论**
+* 编码顺序：**通过schema定义设计数据存储结构、功能逻辑、页面展示**
+

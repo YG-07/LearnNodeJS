@@ -2,9 +2,11 @@
 * 应用程序的启动（入口）文件
 */
 
-// 1.加载模块：express、swig
+// 1.加载模块：express、swig处理模块、mongoose加载数据库模块
 var express = require('express')
 var swig = require('swig')
+var mongoose = require('mongoose')
+
 
 // 2.创建app应用，NodeJS Http.createServer()
 var app = express()
@@ -12,6 +14,11 @@ var app = express()
 // 设置静态文件托管目录
 // 请求以'/public'，将文件路径补全
 app.use('/public', express.static(__dirname + '/public'))
+
+// 处理3种模块
+app.use('/admin', require('./routers/admin'))
+app.use('/api', require('./routers/api'))
+app.use('/', require('./routers/main'))
 
 
 
@@ -45,4 +52,5 @@ app.get('/', function (req, res, next) {
 
 
 // 3.监听http请求
+mongoose.connect()
 app.listen(8081)
