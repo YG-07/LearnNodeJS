@@ -1,4 +1,11 @@
 
 body {
-  background: hotpink;
+  background: white;
+}
+
+.rightBox {
+  width: 300px;
+  padding: 20px;
+  margin: 20px;
+  border: #000 1px solid;
 }

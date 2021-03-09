@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" type="text/css" href="/public/main.css">
+  <script src="/public/js/jquery.min.js"></script>
+  <script src="/public/js/index.js"></script>
+</head>
+<body>
+  <div>
+    <div class="rightBox" id="userInfo" style="display: none">
+      <div><h2>用户信息</h2></div>
+      <p class="username"></p>
+      <p class="info"></p>
+      <p class="logout"><a href="javascript:;">退出</a></p>
+    </div>
+    
+    <div class="rightBox" id="loginBox">
+      <div><h2>登录</h2></div>
+      <div><span>用户名：</span><input type="text" name="username"><em></em></div>
+      <div><span>密码：</span><input type="password" name="password"><em></em></div>
+      <div><button>登 录</button></div>
+      <p>还没注册？<a href="javascript:;" class="colMint">马上注册</a></p>
+      <p class="colWarning"></p>
+    </div>
+  
+    <div class="rightBox" id="registerBox" style="display: none">
+      <div><h2>注册</h2></div>
+      <div><span>用户名：</span><input type="text" name="username"><em></em></div>
+      <div><span>密码：</span><input type="password" name="password"><em></em></div>
+      <div><span>重复密码：</span><input type="password" name="repassword"><em></em></div>
+      <div><button>注 册</button></div>
+      <p>已有账号？<a href="javascript:;" class="colMint">马上登录</a></p>
+      <p class="colWarning"></p>
+    </div>
+    
+  </div>
+
+</body>
+</html>

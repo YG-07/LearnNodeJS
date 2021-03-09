@@ -122,3 +122,110 @@ module.exports = router
 * 功能模块开发顺序：**用户、栏目、内容、评论**
 * 编码顺序：**通过schema定义设计数据存储结构、功能逻辑、页面展示**
 
+## 四、配置MongoDB数据库
+* 官方下载地址：https://www.mongodb.com/try/download/community
+### 4.1 安装后配置MongoDB服务
+1. 配置mongo安装目录的**bin文件夹**的环境变量
+2. 在目录下新建一个**mongo.conf配置文件**，内容是：
+```javaScript
+dbpath = D:\NodeJS\LearnNodeJS\Blog2\db
+logpath = D:\NodeJS\LearnNodeJS\Blog2\db\log\mongod.log
+logappend = true
+port = 27017
+```
+3. 以上的路径是项目的数据库文件夹，再里面新建**log文件夹**，里面新建一个**mongod.log日志文件**
+4. 通过配置文件注册服务，指令：`mongod --install -f mongo.conf`
+5. 打开任务管理器(或使用指令：`net start MongoDB`)，打开MongoDB的服务
+
+### 4.2 创建一个数据库
+1. 打开cmd，输入mongo即可打开数据库。
+2. 使用`use blog`语句新建blog数据库
+3. 要插入一条数据才能新建数据库，使用`db.blog.insert({"name":"blog"})`语句，使用`show dbs`查看所有数据库
+
+### 4.3 在项目中使用MongoDB数据库
+1. 在app.js中使用mongoose模块连接，并将端口监听放在成功条件下
+```javaScript
+mongoose.connect('mongodb://localhost:27017/blog', function (err) {
+  if(err) {
+    console.log('blog数据库 连接失败')
+  } else {
+    console.log('blog数据库 连接成功')
+    app.listen(8081)
+  }
+})
+```
+2. 在schemas文件夹中创建user的表结构js文件，查看[Schema语法](https://mongoosejs.com/docs/guide.html)
+3. 在user.js文件中创建并暴露表结构
+```javaScript
+var mongoose = require('mongoose')
+module.exports = new mongoose.Schema({
+  username: String,
+  password: String
+})
+```
+4. 在models文件夹中创建user.js，指向schemas文件夹的js文件.作用是生成一个**表结构对象**，用于对表操作
+```javaScript
+var mongoose = require('mongoose')
+var userSchema = require('../schemas/users')
+module.exports = mongoose.model('User', userSchema)
+```
+
+## 五、用户注册前端页面
+### 5.1 配置路由main.js，get请求，render解析'/main/index.html'
+1. 在main文件夹创建index.html，并展示所有注册和登录的界面
+2. 修改静态资源的路径，改成'/public'
+3. 通过jQuery语法实现注册和登录界面的切换，在public文件夹新建js文件夹，在里面新建index.js
+4. 在index.html中使用script标签静态导入jQuery.min.js和/js/index.js
+
+### 5.2 在index.js中实现注册功能(**前端**)
+1. 通过`$('')`选择器获取登录和注册的外标签元素
+2. 再通过`.find`和`.on()`查找元素并监听事件
+```javaScript
+// 切换注册面板。同理切换登录
+  $loginBox.find('a.colMint').on('click', function () {
+    $registerBox.show()
+    $loginBox.hide()
+  })
+```
+3. 监听“注册”按钮点击，通过AJAX发送post请求，提交用户输入的数据，这里路由url为：`/api/user/register`
+* ajax请求的属性有：type(有get/post)、url、data对象、dataType(如json)、success成功回调
+```javaScript
+$registerBox.find('button').on('click', function () {
+$.ajax({...})
+})
+```
+### 5.3 在api中配置注册的路由(**后端**)
+* 先创建一个统一返回格式的对象，包含状态码(一般用0表示成功)、信息等
+```javaScript
+var responseData;
+router.use(function (req, res, next) {
+  responseData = {
+    code: 0,
+    message: ''
+  }
+  next()
+})
+```
+* 然后对注册信息进行判断，并返回统一格式对象
+1. 基本判断：非空、两次密码必须相同
+2. 数据库对象的操作，对user的model对象操作，查询一条User.findOne()使用Promise语法，保存到数据库user.save()
+
+### 5.4 ajax监听“登录”按钮，同理
+### 5.5 api配置登录的路由，并在对象中返回用户信息
+```javaScript
+responseData.userInfo = {
+  _id: userInfo._id,
+  username: userInfo.username
+}
+```
+### 5.6 登录后显示用户信息
+* 一开始隐藏用户信息、注册界面，只显示登录界面
+* 登录成功就隐藏登录、注册的面板，显示用户信息面板
+
+### 5.7 [小结]前端设计界面，后端配置路由
+> 编程大致流程：创建数据库 -> 在schemas中建表 -> 在models中建数据库对象 -> 编写前端views的html页面 -> 引用public静态资源 -> 编写js/css等资源 -> 编写后端api路由js文件 -> 最后前端根据请求的后端数据变换页面内容 
+* 前端界面的代码在views/main/index.html中，通过静态文件index.js控制界面的**事件监听**和**数据请求**
+* 后端在routers/api.js根据前端的url，配置路由，检查数据再通过models/user.js的**数据库对象**进一步检查，最后返回一个**统一格式对象**
+
+
+
