@@ -58,13 +58,26 @@ $(function () {
         if(!res.code) {
           // 登录成功
           setTimeout(function () {
-            $loginBox.hide()
-            $registerBox.hide()
-            $userInfo.show()
-            // 将用户信息显示出来
-            $userInfo.find('.username').html(res.userInfo.username)
-            $userInfo.find('.info').html('你好'+res.userInfo.username+',欢迎光临我的博客~')
+            // $loginBox.hide()
+            // $registerBox.hide()
+            // $userInfo.show()
+            // // 将用户信息显示出来
+            // $userInfo.find('.username').html(res.userInfo.username)
+            // $userInfo.find('.info').html('你好'+res.userInfo.username+',欢迎光临我的博客~')
+            window.location.reload()
           }, 1000)
+        }
+      }
+    })
+  })
+  
+  //绑定退出按钮
+  $('#logout').on('click', function () {
+    $.ajax({
+      url: '/api/user/logout',
+      success: function (res) {
+        if(!res.code){
+          window.location.reload()
         }
       }
     })

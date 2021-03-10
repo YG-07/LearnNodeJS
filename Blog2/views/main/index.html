@@ -9,13 +9,15 @@
 </head>
 <body>
   <div>
-    <div class="rightBox" id="userInfo" style="display: none">
+    {% if userInfo._id %}
+    <div class="rightBox">
       <div><h2>用户信息</h2></div>
-      <p class="username"></p>
-      <p class="info"></p>
-      <p class="logout"><a href="javascript:;">退出</a></p>
+      <p>{{userInfo.username}}</p>
+      <p>你好 {{userInfo.username}},欢迎光临我的博客~</p>
+      <p id="logout"><a href="javascript:;">退出</a></p>
     </div>
     
+    {% else %}
     <div class="rightBox" id="loginBox">
       <div><h2>登录</h2></div>
       <div><span>用户名：</span><input type="text" name="username"><em></em></div>
@@ -34,6 +36,7 @@
       <p>已有账号？<a href="javascript:;" class="colMint">马上登录</a></p>
       <p class="colWarning"></p>
     </div>
+    {%endif%}
     
   </div>
 

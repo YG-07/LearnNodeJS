@@ -222,10 +222,32 @@ responseData.userInfo = {
 * 一开始隐藏用户信息、注册界面，只显示登录界面
 * 登录成功就隐藏登录、注册的面板，显示用户信息面板
 
-### 5.7 [小结]前端设计界面，后端配置路由
+### 5.7 使用cookie保存用户状态
+1. 在app.js中导入cookies模块，并设置
+2. 弃用登录后通过选择器修改页面的方案，使用[HTML模板语法](https://blog.csdn.net/xiaoming0018/article/details/80389277)
+3. 修改后，在配置cookies中解析登录用户信息
+```javaScript
+req.username = {}
+if(req.cookies.get('userInfo')){
+  try {
+    req.userInfo = JSON.parse(req.cookies.get('userInfo'))
+  } catch (e) {}
+}
+```
+4. 然后登录路由里面设置cookie，重载页面即可
+```javaScript
+// 返回一个cookie
+req.cookies.set('userInfo', JSON.stringify({
+  _id: userInfo._id,
+  username: userInfo.username
+}))
+```
+5. 监听退出按钮，同样发送AJAX，配置退出路由，设置一个null的cookie，重载页面
+
+### 5.8 [小结]前端设计界面，后端配置路由
 > 编程大致流程：创建数据库 -> 在schemas中建表 -> 在models中建数据库对象 -> 编写前端views的html页面 -> 引用public静态资源 -> 编写js/css等资源 -> 编写后端api路由js文件 -> 最后前端根据请求的后端数据变换页面内容 
 * 前端界面的代码在views/main/index.html中，通过静态文件index.js控制界面的**事件监听**和**数据请求**
 * 后端在routers/api.js根据前端的url，配置路由，检查数据再通过models/user.js的**数据库对象**进一步检查，最后返回一个**统一格式对象**
-
+> cookie的使用过程：app.js引入Cookies -> 配置Cookie -> 编写后端api返回cookie -> 修改前端js登录切换页面的方式 -> 修改index.html使用模板语法 -> 再配置Cookies解析登录信息 -> 最后退出功能同理
 
 

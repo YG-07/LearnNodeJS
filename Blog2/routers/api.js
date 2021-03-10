@@ -96,10 +96,23 @@ router.post('/user/login', function (req, res, next) {
       _id: userInfo._id,
       username: userInfo.username
     }
+    // 返回一个cookie
+    req.cookies.set('userInfo', JSON.stringify({
+      _id: userInfo._id,
+      username: userInfo.username
+    }))
     res.json(responseData)
     return
   })
   
 })
+
+//退出路由
+router.get('/user/logout', function (req, res, next) {
+  req.cookies.set('userInfo', null)
+  responseData.message = '退出登录'
+  res.json(responseData)
+})
+
 
 module.exports = router

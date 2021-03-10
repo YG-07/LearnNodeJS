@@ -2,20 +2,16 @@
 * 应用程序的启动（入口）文件
 */
 
-// 1.加载模块：express、swig处理模块、mongoose加载数据库模块、处理提交的post数据
+// 1.加载模块：express、swig处理模块、mongoose加载数据库模块、处理提交的post数据、cookie模块
 var express = require('express')
 var swig = require('swig')
 var mongoose = require('mongoose')
 var bodyParser = require('body-parser')
+var Cookies = require('cookies')
 
 // 2.创建app应用，NodeJS Http.createServer()
 var app = express()
 
-
-// 4.开发过程，取消模板缓存
-swig.setDefaults({catch: false})
-// 设置bodyParser
-app.use(bodyParser.urlencoded({extended: true}))
 
 // 设置静态文件托管目录
 // 请求以'/public'，将文件路径补全
@@ -28,6 +24,27 @@ app.engine('html', swig.renderFile)
 app.set('views', './views')
 // 3.注册引擎：1.view engine，2.模板引擎名称html
 app.set('view engine', 'html')
+
+
+// 4.开发过程，取消模板缓存
+swig.setDefaults({catch: false})
+// 设置bodyParser
+app.use(bodyParser.urlencoded({extended: true}))
+// 设置cookie
+app.use(function (req, res, next) {
+  req.cookies = new Cookies(req, res)
+  
+  // 解析登录用户信息
+  req.username = {}
+  if(req.cookies.get('userInfo')){
+    try {
+      req.userInfo = JSON.parse(req.cookies.get('userInfo'))
+    } catch (e) {}
+  }
+  
+  console.log(req.cookies.get('userInfo'))
+  next()
+})
 
 
 // 处理3种路由
