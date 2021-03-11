@@ -244,10 +244,29 @@ req.cookies.set('userInfo', JSON.stringify({
 ```
 5. 监听退出按钮，同样发送AJAX，配置退出路由，设置一个null的cookie，重载页面
 
-### 5.8 [小结]前端设计界面，后端配置路由
+### 5.8 判断用户类型
+1. 在app.js中解析了cookie后，添加一个isAdmin属性
+```javaScript
+User.findById(req.userInfo._id).then(function (userInfo) {
+  req.userInfo.isAdmin = Boolean(userInfo.isAdmin)
+  next()
+})
+```
+2. 然后修改index.html的代码模板
+```html
+{% if userInfo.isAdmin %}
+<p>你好 {{userInfo.username}},你是管理员！ <a href="/admin">点击进入管理</a></p>
+{% else %}
+<p>你好 {{userInfo.username}},欢迎光临我的博客~</p>
+{% endif %}
+```
+
+### 5.9 [小结]前端设计界面，后端配置路由
 > 编程大致流程：创建数据库 -> 在schemas中建表 -> 在models中建数据库对象 -> 编写前端views的html页面 -> 引用public静态资源 -> 编写js/css等资源 -> 编写后端api路由js文件 -> 最后前端根据请求的后端数据变换页面内容 
 * 前端界面的代码在views/main/index.html中，通过静态文件index.js控制界面的**事件监听**和**数据请求**
 * 后端在routers/api.js根据前端的url，配置路由，检查数据再通过models/user.js的**数据库对象**进一步检查，最后返回一个**统一格式对象**
 > cookie的使用过程：app.js引入Cookies -> 配置Cookie -> 编写后端api返回cookie -> 修改前端js登录切换页面的方式 -> 修改index.html使用模板语法 -> 再配置Cookies解析登录信息 -> 最后退出功能同理
+
+## 六、后台管理功能及界面的搭建
 
 
