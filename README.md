@@ -268,5 +268,34 @@ User.findById(req.userInfo._id).then(function (userInfo) {
 > cookie的使用过程：app.js引入Cookies -> 配置Cookie -> 编写后端api返回cookie -> 修改前端js登录切换页面的方式 -> 修改index.html使用模板语法 -> 再配置Cookies解析登录信息 -> 最后退出功能同理
 
 ## 六、后台管理功能及界面的搭建
+* 编写admin.js路由文件，首先用use方法判断一下是否是管理员，然后get，返回管理员后台的首页。在view文件夹创建'/admin/index.html'
+* 使用Bootstrap框架搭建后台
+### 6.1 使用Bootstrap组件
+1. [导航条](https://v3.bootcss.com/components/#navbar)，一个菜单导航
+2. [巨幕](https://v3.bootcss.com/components/#jumbotron)，一个大字体的首页
+### 6.2 使用HTML的模板语法
+1. 继承页面，将index的内容复制到'layout.html'里，将首页会变化的部分用`{% block 区块名 %}{% endblock %}`替换。在index中继承该页面`{% extends 'layout.html' %}`
+2. 面向对象，将定义的`区块`代码重写，放入标签对中。
+
+### 6.3 实现"用户管理"功能
+1. 创建`user_index.html`，继承`layout.html`，修改后者的用户管理链接`/admin/user`。
+2. 配置其路由，引用`User`的model，使用`.find()`查询记录，获取的是一个`对象的数组`将其渲染到`user_index`上。
+3. 在`user_index`中设计界面
+* 使用[路径导航](https://v3.bootcss.com/components/#breadcrumbs)，俗称：`面包屑`，跳转页面的组件
+* 创建表格，定义表头，然后遍历查询返回的`users`对象，注意`_id`(用`id`也可)是个对象，要转字符串
+```html
+{% for user in users %}
+  <tr>
+    <td>{{user.id.toString()}}</td>
+    <td>{{user.username}}</td>
+    <td>{{user.password}}</td>
+    <td>
+      {% if user.isAdmin %}是{% endif %}
+    </td>
+  </tr>
+{% endfor %}
+```
+
+
 
 
