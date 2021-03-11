@@ -11,6 +11,7 @@ var Cookies = require('cookies')
 
 // 2.创建app应用，NodeJS Http.createServer()
 var app = express()
+var User = require('./models/user')
 
 
 // 设置静态文件托管目录
@@ -39,11 +40,18 @@ app.use(function (req, res, next) {
   if(req.cookies.get('userInfo')){
     try {
       req.userInfo = JSON.parse(req.cookies.get('userInfo'))
-    } catch (e) {}
+      // 获取当前用户的类型
+      User.findById(req.userInfo._id).then(function (userInfo) {
+        req.userInfo.isAdmin = Boolean(userInfo.isAdmin)
+        next()
+      })
+      
+    } catch (e) {
+      next()
+    }
+  } else {
+    next()
   }
-  
-  console.log(req.cookies.get('userInfo'))
-  next()
 })
 
 

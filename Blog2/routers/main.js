@@ -5,6 +5,8 @@ var express = require('express')
 var router = express.Router()
 
 router.get('/', function (req, res, next) {
+
+  console.log(req.userInfo)
   // 分配模板
   res.render('main/index', {
     userInfo: req.userInfo
