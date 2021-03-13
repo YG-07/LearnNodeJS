@@ -306,6 +306,20 @@ User.findById(req.userInfo._id).then(function (userInfo) {
 4. 然后在render函数中向模板传递这些数据，然后显示到分页组件上
 5. 使用分页组件，新建一个`page.html`，在用户列表页面引用：`{%include 'page.html'%}`。（注意引用时，组件中的数据必须是后端传递的数据）
 
+### 七、分类管理功能及界面
+### 7.1 分类管理下拉菜单
+1. 使用Bootstrap的下拉列表样式
+```html
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" ...>...分类管理</a>
+  <ul class="dropdown-menu">
+    <li><a href="/admin/category">分类首页</a></li>
+    <li><a href="/admin/category/add">添加分类</a></li>
+  </ul>
+</li>
+```
+2. 
+
 
 
 
