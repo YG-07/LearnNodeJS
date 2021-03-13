@@ -14,21 +14,20 @@
 <table class="table table-hover table-striped">
   <tr>
     <th>ID</th>
-    <th>用户名</th>
-    <th>密码</th>
-    <th>管理员?</th>
+    <th>分类名称</th>
+    <th>操作</th>
   </tr>
 
-  <!-- {% for user in users %}
+  {% for cate in cates %}
   <tr>
-    <td>{{user.id.toString()}}</td>
-    <td>{{user.username}}</td>
-    <td>{{user.password}}</td>
+    <td>{{cate.id.toString()}}</td>
+    <td>{{cate.catename}}</td>
     <td>
-      {% if user.isAdmin %}是{% endif %}
+      <a href="/admin/category/edit?id={{cate.id.toString()}}">修改</a>
+      <a href="/admin/category/delete?id={{cate.id.toString()}}">删除</a>
     </td>
   </tr>
-  {% endfor %} -->
+  {% endfor %}
 
 </table>
 

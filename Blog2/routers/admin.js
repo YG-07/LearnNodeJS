@@ -48,6 +48,7 @@ router.get('/user', function(req, res) {
       limitNum,
       pages,
       page,
+      name: 'user'
       })
     })
   })
@@ -55,12 +56,34 @@ router.get('/user', function(req, res) {
 
 // 分类路由,首页
 router.get('/category', function(req, res, next) {
-  res.render('admin/category_index', {
-    userInfo: req.userInfo
+  var page = Number(req.query.page || 1)
+  var limitNum = 2
+  
+  Category.count().then(function(count) {
+    // 根据limitNum和总条数计算总页数,ceil向上取整
+    pages = Math.ceil(count / limitNum)
+    // 不能大于pages,两者中取较小值
+    page = Math.min(page, pages)
+    // 不能小于1，反之
+    page = Math.max(1, page)
+    var skipNum = (page - 1) * limitNum
+
+    Category.find().limit(limitNum).skip(skipNum).then(function(cates) {
+    res.render('admin/category_index', {
+      userInfo: req.userInfo,
+      cates,
+
+      count,
+      limitNum,
+      pages,
+      page,
+      name: 'category'
+      })
+    })
   })
 })
 
-//添加
+//添加分类首页
 router.get('/category/add', function(req, res, next) {
   res.render('admin/category_add', {
     userInfo: req.userInfo
@@ -91,7 +114,7 @@ router.post('/category/add', function(req, res, next) {
         catename: catename
       }).save()
     }
-  }).then(function(newCate) {
+  }).then(function() {
     res.render('admin/success', {
       userInfo: req.userInfo,
       message: '分类保存成功',
@@ -100,5 +123,100 @@ router.post('/category/add', function(req, res, next) {
   })
   
 })
+
+// 分类修改页面
+router.get('/category/edit', function(req, res) {
+  var id = req.query.id || ''
+  // 修改的分类
+  Category.findOne({
+    _id: id
+  }).then(function(category) {
+    if(!category) {
+      res.render('admin/error', {
+        userInfo: req.userInfo,
+        message: '分类信息不存在！'
+      })
+      return Promise.reject()
+    } else {
+      res.render('admin/category_edit', {
+        userInfo: req.userInfo,
+        category
+      })
+    }
+  })
+
+})
+
+// 分类修改请求
+router.post('/category/edit', function(req, res) {
+  var id = req.query.id || ''
+  var catename = req.body.catename || ''
+
+  // 修改的分类
+  Category.findOne({
+    _id: id
+  }).then(function(category) {
+    if(!category) {
+      res.render('admin/error', {
+        userInfo: req.userInfo,
+        message: '分类信息不存在！'
+      })
+      return Promise.reject()
+    } else {
+      // 判断用户是否操作
+      if (catename == category.catename) {
+        res.render('admin/success', {
+          userInfo: req.userInfo,
+          message: '未进行修改分类信息！',
+          url: '/admin/category'
+        }) 
+        return Promise.reject()
+      } else {
+          //要修改名称是否存在
+          return Category.findOne({
+            // $ne 不等于
+            _id: {$ne: id},
+            catename: catename
+          })
+        }
+    }
+  }).then(function(isSame) {
+    if(isSame) {
+      res.render('admin/error', {
+        userInfo: req.userInfo,
+        message: '数据库中已经存在同名的分类！'
+      })
+      return Promise.reject()
+    } else {
+      // 保存
+      return Category.update({
+        _id: id
+      }, {
+        catename: catename
+      })
+    }
+  }).then(function() {
+    res.render('admin/success', {
+      userInfo: req.userInfo,
+      message: '分类修改成功！',
+      url: '/admin/category'
+    })
+  })
+})
+
+// 分类删除
+router.get('/category/delete', function(req, res) {
+  var id = req.query.id || ''
+  Category.remove({
+    _id: id
+  }).then(function() {
+    res.render('admin/success', {
+      userInfo: req.userInfo,
+      message: '删除修改成功！',
+      url: '/admin/category'
+    })
+  })
+})
+
 
 module.exports = router

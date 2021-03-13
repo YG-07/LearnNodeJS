@@ -323,9 +323,20 @@ User.findById(req.userInfo._id).then(function (userInfo) {
 4. 编写分类的的路由，分类首页`/category`，然后添加分类有get和post方法，路由都是`/category/add`，分别指向：添加分类的页面，根据提交添加表单跳转到成功或失败页面。
 5. 提交表单的路的详解，先创建category的`schemas和models`的js文件
 * 先判断输入是否为空
-* 导入Category数据库对象，`finOne()`先判断是否存在，存在返回一个`Promise.reject()`
+* 导入Category数据库对象，`.finOne()`先判断是否存在，存在返回一个`Promise.reject()`
 * 否则就`.save()`保存到数据库。
 
+### 7.2 分类列表的修改
+1. 新建`category_edit.html`，类比添加页面编写模板
+2. 同理配置路由，向page组件的多传递一个`name`参数，即可在不同页面中引用并跳转。
+3. 修改页面的get路由，根据`_id`查询是否存在，然后显示在对应模板页面
+4. 修改的post路由，设置`id参数`，首先根据url请求的参数获取:`req.query.id`，然后获取请求体的数据，`req.body.catename`.
+* 首先判断是否存在该分类，否则再判断用户是否进行了操作，否则查找是否存在修改后同名的分类，返回该查询（查询语句中：`_id: {$ne: id}`，`$ne`表示不等于，这里即除去自己的同名数据）
+* 然后判断是否有同名的分类，否则更新数据库并返回
+* 最后提示修改成功
+
+### 7.3 分类列表的删除
+1. 直接配置`/category/delete`路由,使用数据库语法的`.remove()`
 
 
 
