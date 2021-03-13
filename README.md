@@ -308,7 +308,7 @@ User.findById(req.userInfo._id).then(function (userInfo) {
 
 ### 七、分类管理功能及界面
 ### 7.1 分类管理下拉菜单
-1. 使用Bootstrap的下拉列表样式
+1. 在layout模板中使用Bootstrap的下拉列表样式，设置分类管理菜单
 ```html
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" ...>...分类管理</a>
@@ -318,7 +318,13 @@ User.findById(req.userInfo._id).then(function (userInfo) {
   </ul>
 </li>
 ```
-2. 
+2. 新建`category_index.html`网页为分类首页
+3. 新建成功、失败信息`seccess和error`页面模板，继承并加载到`layout`页面
+4. 编写分类的的路由，分类首页`/category`，然后添加分类有get和post方法，路由都是`/category/add`，分别指向：添加分类的页面，根据提交添加表单跳转到成功或失败页面。
+5. 提交表单的路的详解，先创建category的`schemas和models`的js文件
+* 先判断输入是否为空
+* 导入Category数据库对象，`finOne()`先判断是否存在，存在返回一个`Promise.reject()`
+* 否则就`.save()`保存到数据库。
 
 
 
