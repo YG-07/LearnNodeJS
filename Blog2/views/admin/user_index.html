@@ -8,7 +8,10 @@
 </ol>
 
 <h3>用户列表</h3>
-<table class="table table-hover">
+
+{%include 'page.html'%}
+
+<table class="table table-hover table-striped">
   <tr>
     <th>ID</th>
     <th>用户名</th>
@@ -26,5 +29,7 @@
   </tr>
   {% endfor %}
 </table>
+
+{%include 'page.html'%}
 
 {% endblock %}

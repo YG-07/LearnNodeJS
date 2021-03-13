@@ -56,7 +56,8 @@ router.post('/user/register', function (req, res, next) {
     // 否则保存到数据库
     var user = new User({
       username: username,
-      password: password
+      password: password,
+      isAdmin: false
     })
     return user.save()
   }).then(function (newUserInfo) {

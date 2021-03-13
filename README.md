@@ -277,7 +277,7 @@ User.findById(req.userInfo._id).then(function (userInfo) {
 1. 继承页面，将index的内容复制到'layout.html'里，将首页会变化的部分用`{% block 区块名 %}{% endblock %}`替换。在index中继承该页面`{% extends 'layout.html' %}`
 2. 面向对象，将定义的`区块`代码重写，放入标签对中。
 
-### 6.3 实现"用户管理"功能
+### 6.3 实现"用户管理"的"用户列表"功能
 1. 创建`user_index.html`，继承`layout.html`，修改后者的用户管理链接`/admin/user`。
 2. 配置其路由，引用`User`的model，使用`.find()`查询记录，获取的是一个`对象的数组`将其渲染到`user_index`上。
 3. 在`user_index`中设计界面
@@ -295,6 +295,17 @@ User.findById(req.userInfo._id).then(function (userInfo) {
   </tr>
 {% endfor %}
 ```
+
+### 6.4 实现"用户列表"分页
+1. 数据库对象的函数
+* limit()：数据分页，限制数据条数
+* skip():从什么地方开始，忽略数据条数，跳过skipNum = (page - 1) * limitNum
+* 使用时：`User.find().limit(limitNum).skip(skipNum).then(...)`
+2. 接收url的页数，默认为1，强制为数字类型：`var page = Number(req.query.page || 1)`
+3. 先使用：`User.count().then(function(count){...})`获取数据条数，再对`page`进行限制再计算忽略条数，再使用以上方法获取每页数据。
+4. 然后在render函数中向模板传递这些数据，然后显示到分页组件上
+5. 使用分页组件，新建一个`page.html`，在用户列表页面引用：`{%include 'page.html'%}`。（注意引用时，组件中的数据必须是后端传递的数据）
+
 
 
 
